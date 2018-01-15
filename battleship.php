@@ -1,5 +1,15 @@
 <?php
 require_once("RangeTracker.php");
+
+######################################
+#Class Ship
+#           This class is used to define a basic object to represent a ship on the board
+#arguments: x, the starting x cordinate the ship will be located at
+#	    y, the starting y cordinate
+#           shipnumber, a number coresponding to the size of the ship
+#           positioning, whether the ship is to be width(lengthwize) or height(horizontal
+#       
+######################################
 class Ship{  #begin class ship
 	private $range; #will calculate the range based on ship number and positioning
 	private $positioning;
@@ -30,13 +40,25 @@ class Ship{  #begin class ship
 } #end class ship
 
 $myship = new Ship(1,3,3,"width");
+
+######################################
+#Class board
+#           This class is used to define a basic object to represent a boardgame. Each player will have an object of this
+#           class.
+#arguments: none 
+#Constructor: There is a boardgame which is an array representing places the user has guessed a ship to be           
+#             on the opponent's board. 0=no guess, 1=found ship space, 2=bad match
+#             There is ranges, a member of the RangeClass to keep track of ships on the user's board and make
+#             sure there's no overlap 
+#             There are variables to only allow 2 ships of size three and one ship of size 4,5, and 6
+######################################
 class Board{
         public $boardgame;
-	public $ranges;
-        public $ships3; #there will be two 1x3 ships
-        public $ships4; #there will be one 1x4 ship
-        public $ships5; #there will be one 1x5 ship
-        public $ships6; #there will be one 1x6 ship3
+	protected $ranges;
+        protected $ships3; #there will be two 1x3 ships
+        protected $ships4; #there will be one 1x4 ship
+        protected $ships5; #there will be one 1x5 ship
+        protected $ships6; #there will be one 1x6 ship3
 
        public function __construct() #begin construct
         {
@@ -47,6 +69,13 @@ class Board{
 		$this->ships5 = 0;
 		$this->ships6 = 0;
         } #end construct
+
+######################################
+#Function setRangeTracker
+#           This function defines a new RangeTracker to be user to keep track of a user's shipss
+#          
+#arguments: none 
+######################################
 
 	public function setRangeTracker() #begin setRangeTracker
 	{
@@ -61,6 +90,15 @@ class Board{
   	
 			
 	} #end setRangeTracker
+
+######################################
+#Function addShip 
+#           This function adds a Ship to the board 
+#          
+#arguments: x,y coordinates for the ship
+#           position - width or height (legthwize or horizontal)
+#           shipnumber - 3,4,5,6 depending on the length of the ship
+######################################
 
 	public function addShip($x,$y,$position, $shipnumber) #begin addShip
 	{
@@ -125,6 +163,14 @@ class Board{
 		return 1;
 	} #end function addShip
 
+######################################
+#Function deleteShip
+#           This function takes a member of the range class and finds and deletes the ship from the 
+#           list of ranges
+#arguments: range a member of the class Range from RangeTracker.php 
+#          
+######################################
+
 	public function deleteShip($range) #begin function deleteShip
 	{
 		if($this->ranges->foundRange($range))
@@ -135,6 +181,14 @@ class Board{
 			
 	} #end function deleteShip
 
+######################################
+#Function hasShip
+#           This function tests if a ship exists 
+#           
+#arguments: range a member of the class Range from RangeTracker.php 
+#          
+######################################
+
 	public function hasShip($range) #begin function hasShip
 	{
 		if($this->ranges->foundRange($range))
@@ -144,6 +198,14 @@ class Board{
 		else
 			return false;
 	} #end function hasShip
+
+######################################
+#Function makeMove
+#           This function makes a move on the opponents board 
+#           
+#arguments: spot - an array containing the x and y cordinates to make the move
+#           otherboard - the opponents board, an instance of the Board (this) class
+######################################
 
 	public function makeMove($spot,$otherboard) #begin function makeMove
 	{
@@ -157,6 +219,13 @@ class Board{
 		$this->boardgame[$x][$y]=-1;
 	    #$this->boardgame[$x][$y]= blah;
 	}
+
+######################################
+#Function getBoard
+#           This function returns an array of the ranges and the values on the boardgame 
+#           
+#arguments: none
+######################################
 
 	public function getBoard() #begin function getBoard
 	{
@@ -173,13 +242,37 @@ class Board{
 	     $board = array("ranges"=>$rangestring,"board"=>$boardstring);
 	     return $board;	
 	} #end function getBoard
+
+##################################################
+#Function wonGame
+#	This function determines if a game is won. 
+#arguments: none
+##############################################
+	public function wonGame() #begin function wonGame
+	{
+		if($this->ranges->isEmpty())
+			return true;
+		else
+			return false;
+	} #end function wonGame
 }
 
+######################################
+#Class Player
+#           This class extends Board and defines a player of the boardgame 
+#           
+#arguments: usrname - the player's username
+######################################
+
 class Player extends Board{ #begin class player
-	public $name;
+	private $name;
  	public function setName($usrname) #begin construct
  	{
 		$this->name = $usrname;
+	}
+	public function getName($usrname)
+	{
+		return $this->name;
 	}
 } #end class player
 

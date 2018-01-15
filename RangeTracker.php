@@ -57,6 +57,14 @@ class RangeTracker extends SplDoublyLinkedList #begin class rangetracker
         	return 1;
 	
 	} #end function addRange
+      	
+	public function isEmpty()
+	{
+		if($this->list->isEmpty())
+			return true;
+		else
+			return false;
+	}
 
 	public function foundRange($range) #begin function foundRange. This function matches an exact range.
 	{
